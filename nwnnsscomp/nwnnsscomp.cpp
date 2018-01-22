@@ -73,7 +73,7 @@ bool g_bInclude = false;
 bool g_bSymbolList = false;
 bool g_bSymbolCount = false;
 int g_nTest = 0;
-int g_nVersion = 999999;
+int g_nVersion = 174;
 
 //
 // Test flags
@@ -2066,19 +2066,19 @@ int main (int argc, char *argv [])
         printf ("  Test Compile:      nwnnsscomp -t[x] [eglkoqrs] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
 
         printf ("Commands:\n");
-        printf ("  -c - Compile the script (default)\n");
-		printf ("  -d - Decompile the script (can't be used with -c)\n");
-        printf ("  -x - Extract script from NWN data files\n");
+        printf ("  -c  - Compile the script (default)\n");
+		printf ("  -d  - Decompile the script\n");
+        printf ("  -x  - Extract script from NWN data files\n");
         printf ("  -t1 - Perform a compilation test with BIF scripts\n");
         printf ("  -t2 - Perform a compilation test with the given module\n");
         printf ("  -t3 - Optimization space saving report with the given module\n");
         printf ("  -t4 - Perform a compilation test with the given file or files\n");
 
-        printf ("Options:\n");
+        printf ("\nOptions:\n");
 		printf ("  -e - Enable non-Bioware extensions\n");
 		printf ("  -g - Don't produce ndb debug file\n");
 		printf ("  -h - Directory where NWN Player content is located. (Can also be set in env as NWNHOMEDIR)\n");
-		printf ("  -i - Directory where all NWN scripts are located.\n");
+		printf ("  -i - Directory where all NWN scripts are located. (See Note)\n");
 		printf ("  -l - List constant, struct and function symbols and running total\n");
 		printf ("  -k - Enable CPP support - only meaningful with -i and using separate directory structure\n");
 		printf ("  -o - Optimize the compiled source\n");
@@ -2086,11 +2086,13 @@ int main (int argc, char *argv [])
 		printf ("  -q - Silence most messages\n");
 		printf ("  -r - report basic status even when quiet (e.g. Compiling foo.nss)\n");
 		printf ("  -s - print symbol count for compiled unit\n");
-		printf ("  -v x.xx - Set the version of the compiler (Defaults to 1.74)\n");
-		printf ("  Note: the include dir can either be a flat directory with all the files\n");
-		printf ("        extracted in the right order (so later ones overwrite earlier ones) or\n");
-		printf ("        it may contain a subdirectory for each set of scripts. These must be named\n");
-		printf ("        base_data  xp1_data  xp1patch_data  xp2_data  xp2patch_data  xp3_data\n");
+		printf ("  -v x.xx - Set the version of the compiler (Defaults to 1.74)\n\n");
+		printf ("  Note: The include dir can either be a flat directory with all the files\n");
+		printf ("        extracted in the correct order from oldest to newest (so later files overwrite earlier\n");
+		printf ("         files) or it may contain a subdirectory for each set of scripts.\n\n");
+        printf ("          For NWN EE create the folder(s): base_scripts\n\n");
+        printf ("          For NWN 1.69 create the folder(s): base xp1 xp1patch xp2 xp2patch xp3\n");
+		printf ("            To include CPP support in 1.69 create the folder(s): xpcpp\n");
 		exit (0);
 	}
 
@@ -2104,7 +2106,7 @@ int main (int argc, char *argv [])
 		printf ("Unable to locate or open Neverwinter Nights\n");
 		exit (1);
 	}
-	
+
 	if (bCPP) {
 		if (!g_bQuiet) printf ("Enabling CPP include directory\n");
 		g_sLoader.EnableCPP(true);
