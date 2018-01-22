@@ -42,6 +42,7 @@
 #include "NwnStdLoader.h"
 #include "NwnModuleFile.h"
 #include "NwnHierarchy.h"
+#include <vector>
 #ifdef _WIN32
 #include <atlbase.h>
 #endif
@@ -206,20 +207,15 @@ bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char *pszIncDir, co
 		}
 	}
 	//
-	// Create the other directories
+	// Add the other directories
 	//
 	// Currently a HACK
 	//
 
-	if (bNWNee) {
-		m_strOverride = m_strRootHome + "override/";
-		m_strModule = m_strRootHome + "modules/";
-		m_strHak = m_strRootHome + "hak/";
-	} else {
-		m_strOverride = m_strRoot + "override/";
-		m_strModule = m_strRoot + "modules/";
-		m_strHak = m_strRoot + "hak/";		
-	}
+    m_strOverride = m_strRootHome + "override/";
+    m_strModule = m_strRootHome + "modules/";
+    m_strHak = m_strRootHome + "hak/";
+
 	return true;
 }
 
@@ -364,23 +360,30 @@ unsigned char *CNwnStdLoader::LoadResource (const char *pszName,
 
 	//
 	// Try the include dir if enabled
-        //
+    //
+    int d;
+    int start = 1;
+    //char *dirs ;
+    std::vector <std::string> dirs;
 	if (m_bUseInclude) {
-		int d;
-		int start = 1;
-        char *dirs [] =  {
-            (char*) "xpcpp_data",
-            (char*) "xp3_data",
-            (char*)	"xp2patch_data",
-            (char*)	"xp2_data",
-            (char*)	"xp1patch_data",
-            (char*)	"xp1_data ",
-            (char*)	"base_data",
-            (char*)	"."
-        };
+        if (m_bNWNee) {
+            start = 0;
+            dirs.push_back("base_scripts");
+        } else {
 
-		if (m_bUseCPP)
-			start = 0;
+            if (m_bUseCPP) {
+                start = 0;
+            }
+
+            dirs.push_back("xpcpp");
+            dirs.push_back("xp3");
+            dirs.push_back("xp2patch");
+            dirs.push_back("xp2");
+            dirs.push_back("xp1patch");
+            dirs.push_back("xp1 ");
+            dirs.push_back("base");
+            dirs.push_back(".");
+        };
 
 		for (d = start; d < 8; d++ ) {
 			std::string str (m_strIncludeDir);
