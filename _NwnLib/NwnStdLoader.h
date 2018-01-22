@@ -87,7 +87,7 @@ public:
 
 	// @cmember Initialize the loader
 
-	bool Initialize (const char *pszNwnDir = NULL, const char * pszIncDir = NULL);
+	bool Initialize (const char *pszNwnDir = NULL, const char *pszIncDir = NULL, const char *pszNwnHomeDir = NULL, const bool bNWNee = true);
 
 	void EnableCPP(bool val);
  
@@ -179,6 +179,10 @@ protected:
 
 	std::string				m_strRoot;
 
+	// @cmember NWN Home directory
+
+	std::string				m_strRootHome;
+
 	// @cmember NWN override directory
 
 	std::string				m_strOverride;
@@ -218,6 +222,10 @@ protected:
 	// @cmember Array of hak files
 
 	CNwnArray <CNwnModuleFile *> m_apHaks;
+
+	// @cmember If true use NWN EE otherwise 1.69
+
+	bool 					m_bNWNee;
 };
 
 #endif // ETS_NWNLOADER_H

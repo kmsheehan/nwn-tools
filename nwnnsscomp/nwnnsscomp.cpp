@@ -43,6 +43,7 @@
 #include "../_NwnLib/NwnModuleFile.h"
 #include "../_NwnLib/NwnStdLoader.h"
 
+
 #ifdef _WIN32
 #include <atlbase.h>
 #include <io.h>
@@ -66,6 +67,8 @@ bool g_fExtract = false;
 bool g_fOptimize = false;
 bool g_fEnableExtensions = false;
 bool g_bNWNDir = false;
+bool g_bNWNHomeDir = false;
+bool g_bNWNee = true;
 bool g_bInclude = false;
 bool g_bSymbolList = false;
 bool g_bSymbolCount = false;
@@ -1479,74 +1482,6 @@ const char *pszToReplaceExt, const char *pszReplaceWithExt)
 	return pszOutFile;
 }
 
-/*
-const char *MakeOutFile (const char *pszInFile, const char *pszOutFile,
-	const char *pszToReplaceExt, const char *pszReplaceWithExt)
-{
-	static char szOutName [512];
-
-	//
-	// If we don't have an output file name
-	//
-
-	if (pszOutFile == NULL || pszOutFile [0] == 0)
-	{
-
-		//
-		// Start with the input file name
-		//
-
-		strcpy (szOutName, pszInFile);
-		pszOutFile = szOutName;
-	}
-
-	//
-	// Otherwise, we have an output file name, but it might be a directory
-	//
-
-	else
-	{
-
-		//
-		// If it is just a path
-		//
-
-		int nLength = (int) strlen (pszOutFile);
-		if (pszOutFile [nLength - 1] == '\\' ||
-			pszOutFile [nLength - 1] == '/')
-		{
-
-			//
-			// Start with the input file name
-			//
-
-			strcpy (szOutName, pszOutFile);
-
-			//
-			// Append the base name of the input file name
-			//
-
-			strcat (szOutName, NwnBasename (pszInFile));
-			pszOutFile = szOutName;
-		}
-	}
-
-	//
-	// Make the extension (needs cleaning up)
-	//
-
-	int nLen = (int) strlen (szOutName);
-	int nLen2 = (int) strlen (pszToReplaceExt);
-	if (nLen > nLen2 && stricmp (&szOutName 
-		[nLen - nLen2], pszToReplaceExt) == 0)
-	{
-		strcpy (&szOutName [nLen - nLen2], pszReplaceWithExt);
-	}
-	else
-		strcat (szOutName, pszReplaceWithExt);
-	return pszOutFile;
-}
-*/
 
 //-----------------------------------------------------------------------------
 //
@@ -1905,6 +1840,7 @@ int main (int argc, char *argv [])
 {
 	char *pszOutFile = NULL;
 	char *pszNWNDir = NULL;	
+	char *pszNWNHomeDir = NULL;	
 	char *pszIncDir = NULL;
 	char **papszInFiles = NULL;
 	int nInFileCount = 0;
@@ -1985,43 +1921,48 @@ int main (int argc, char *argv [])
 					case 'g':
 						bDebug = false;
 						break;
-				        case 'p':
+					case 'h':
+						// get the nwnhomedir argument
+						++skip;
+						pszNWNHomeDir =  argv [i + skip];
+						g_bNWNHomeDir = true;
+						break;
+					case 'p':
 						// get the nwndir argument
+						++skip;
+						pszNWNDir =  argv [i + skip];
 						g_bNWNDir = true;
 						break;
 					case 'q':
 						g_bQuiet = true;
 						break;
-				        case 'r':
+					case 'r':
 						bReport = true;
 						break;
-				        case 'l': // List all global symbols 
+					case 'l': // List all global symbols 
 						g_bSymbolList = true;
 						break;
 					case 's':
 						// count of global symbols
 						g_bSymbolCount = true;
-						break;	
-				        case 'k':
-						// enable CPP support
-						bCPP = true;
-						break;	
-					case 'v':
-						{
+						break;
+					case 'v': {
 							g_nVersion = 0;
-							while (*p)
-							{
-								char c = *p++;
-								if (isdigit (c))
+							++skip;
+							char *version = argv[i + skip];
+							while (*version) {
+								char c = *version++;
+								if (isdigit(c)) {
 									g_nVersion = g_nVersion * 10 + (c - '0');
-								else if (c == '.')
-									; // nothing
-								else
-								{
-									printf ("Error: Invalid digit in version number\n");
+								} else if (c == '.') { ; // nothing
+								} else {
+									printf("Error: Invalid digit in version number\n");
 									fError = true;
 									break;
 								}
+							}
+							if (g_nVersion < 174) {
+								g_bNWNee = false;
 							}
 						}
 						break;
@@ -2041,15 +1982,6 @@ int main (int argc, char *argv [])
 						++skip;
 						pszIncDir =  argv [i + skip];
 						g_bInclude = true;
- 
-						/*
-						if (strSearchDirs == NULL)
-							strSearchDirs = new std::string(argv[i + skip]);
-						else {
-							strSearchDirs->append(";");
-							strSearchDirs->append(argv[i + skip]);
-						}
-						*/
 						break;
 					default:
 						printf ("Error: Unrecognized option \"%c\"\n", *p);
@@ -2067,10 +1999,6 @@ int main (int argc, char *argv [])
 		else if (nInFileCount == 0)
 		{
 			papszInFiles [nInFileCount++] = argv [i];
-		}
-		else if (pszOutFile == NULL)
-		{
-			pszOutFile = argv [i];
 		}
 		else
 		{
@@ -2106,6 +2034,23 @@ int main (int argc, char *argv [])
 			}
 		}
 	}
+	if (g_bNWNee && pszNWNHomeDir == NULL) {
+		if (g_bNWNHomeDir) {
+			fError = true;
+			printf("No NWNHomeDir given\n");
+		} else {
+			// get the NWNHOMEDIR from ENV
+			pszNWNHomeDir = getenv("NWNHOMEDIR");
+			if (pszNWNHomeDir == NULL || strlen(pszNWNHomeDir) == 0) {
+				if ( g_bInclude)
+					pszNWNHomeDir = "/tmp";
+				else {
+					fError = true;
+					printf("No NWNHOMEDIR argument, no NWNHOMEDIR environment variable - cannot proceed.\n");
+				}
+			}
+		}
+	}
 
 	//
 	// If there is an error, display the help
@@ -2115,36 +2060,33 @@ int main (int argc, char *argv [])
 		((g_nTest == 2 || g_nTest == 4) && nInFileCount == 0))
 	{
 		printf ("Usage:\n");
-#ifdef _WIN32
-		printf ("nwnnsscomp [-cdegoqx] [-t#] [-v#] infile [outfile]\n\n");
-		printf ("  pathspec - semicolon separated list of directories to search for files.\n");
-#else
-		printf ("nwnnsscomp [-cdegloqrsx] [-t#] [-v#][-i incdir] [-p nwndir] infile\n\n");
-		printf ("  nwndir - directory where NWN is installed. (Can also be set in env as NWNDIR)\n");
-		printf ("  incdir - directory where all NWN scripts are located.\n");
-#endif
-		printf ("  infile - name of the input file.\n");
-#ifdef _WIN32
-		printf ("  outfile - name of the output file.\n");
-#endif
-		printf ("  -c - Compile the script (default)\n");
+        printf ("  Compile (default): nwnnsscomp [-c]  [eglkoqrs] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
+        printf ("  De-compile:        nwnnsscomp -d    [eglkoqrs] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
+		printf ("  Extract Script:    nwnnsscomp -x    [eglkoqrs] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
+        printf ("  Test Compile:      nwnnsscomp -t[x] [eglkoqrs] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
+
+        printf ("Commands:\n");
+        printf ("  -c - Compile the script (default)\n");
 		printf ("  -d - Decompile the script (can't be used with -c)\n");
+        printf ("  -x - Extract script from NWN data files\n");
+        printf ("  -t1 - Perform a compilation test with BIF scripts\n");
+        printf ("  -t2 - Perform a compilation test with the given module\n");
+        printf ("  -t3 - Optimization space saving report with the given module\n");
+        printf ("  -t4 - Perform a compilation test with the given file or files\n");
+
+        printf ("Options:\n");
 		printf ("  -e - Enable non-Bioware extensions\n");
-		printf ("  -g - Don't produce ndb debug file\n");	
-		printf ("  -i - Path to include dir is following non-switch argument\n");	
+		printf ("  -g - Don't produce ndb debug file\n");
+		printf ("  -h - Directory where NWN Player content is located. (Can also be set in env as NWNHOMEDIR)\n");
+		printf ("  -i - Directory where all NWN scripts are located.\n");
 		printf ("  -l - List constant, struct and function symbols and running total\n");
 		printf ("  -k - Enable CPP support - only meaningful with -i and using separate directory structure\n");
 		printf ("  -o - Optimize the compiled source\n");
-		printf ("  -p - Path to NWNDir is following non-switch argument\n");
+		printf ("  -p - Directory where NWN is installed. (Can also be set in env as NWNDIR)\n");
 		printf ("  -q - Silence most messages\n");
 		printf ("  -r - report basic status even when quiet (e.g. Compiling foo.nss)\n");
 		printf ("  -s - print symbol count for compiled unit\n");
-		printf ("  -x - Extract script from NWN data files\n");
-		printf ("  -vx.xx - Set the version of the compiler\n");
-		printf ("  -t1 - Perform a compilation test with BIF scripts\n");
-		printf ("  -t2 - Perform a compilation test with the given module\n");
-		printf ("  -t3 - Optimization space saving report with the given module\n");
-		printf ("  -t4 - Perform a compilation test with the given file or files\n");
+		printf ("  -v x.xx - Set the version of the compiler (Defaults to 1.74)\n");
 		printf ("  Note: the include dir can either be a flat directory with all the files\n");
 		printf ("        extracted in the right order (so later ones overwrite earlier ones) or\n");
 		printf ("        it may contain a subdirectory for each set of scripts. These must be named\n");
@@ -2153,20 +2095,11 @@ int main (int argc, char *argv [])
 	}
 
 	//
-	// Advertise
-	//
-	if (!g_bQuiet) {
-		printf ("NeverWinter Nights Script Compiler/Decompiler\n");
-		printf ("Copyright 2002-2003, Edward T. Smith\n");
-		printf ("Copyright 2003, The Open Knights Consortium\n\n");
-	}
-
-	//
 	// We must be able to open the file
 	//
 	if (!g_bQuiet)
-		printf("NWNNsscompiler initializing with NWNDIR = %s, IncludeDir = %s\n", pszNWNDir, pszIncDir);
-	if (!g_sLoader .Initialize (pszNWNDir, pszIncDir))
+		printf("NWNNsscompiler initializing with NWNDIR = %s, IncludeDir = %s, NWNHOMEDIR = %s\n", pszNWNDir, pszIncDir, pszNWNHomeDir);
+	if (!g_sLoader .Initialize (pszNWNDir, pszIncDir, pszNWNHomeDir, g_bNWNee))
 	{
 		printf ("Unable to locate or open Neverwinter Nights\n");
 		exit (1);
@@ -2384,7 +2317,7 @@ int main (int argc, char *argv [])
 			{
 				UINT32 ulSize;
 				unsigned char *pauchData = NULL;
-				pauchData = sKeyFile .LoadRes (pRes, &ulSize, NULL);
+				pauchData = sKeyFile .LoadRes (pRes, &ulSize, NULL, g_bNWNee);
 				if (pauchData == NULL)
 				{
 					printf ("Error: Unable to open input file \"%s\"\n", szName);

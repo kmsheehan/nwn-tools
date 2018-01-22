@@ -192,7 +192,7 @@ bool CNwnKeyFile::Open (const char *pszKeyFile)
 //-----------------------------------------------------------------------------
 
 unsigned char *CNwnKeyFile::LoadRes (const char *pszName, 
-	NwnResType nResType, UINT32 *pulSize, bool *pfAllocated)
+	NwnResType nResType, UINT32 *pulSize, bool *pfAllocated, bool bNWNee)
 {
 
 	//
@@ -207,7 +207,7 @@ unsigned char *CNwnKeyFile::LoadRes (const char *pszName,
 	// Invoke the helper
 	//
 
-	return LoadRes (psRes, pulSize, pfAllocated);
+	return LoadRes (psRes, pulSize, pfAllocated, bNWNee);
 }
 
 //-----------------------------------------------------------------------------
@@ -226,7 +226,7 @@ unsigned char *CNwnKeyFile::LoadRes (const char *pszName,
 //-----------------------------------------------------------------------------
 
 unsigned char *CNwnKeyFile::LoadRes (const Resource *psRes, 
-	UINT32 *pulSize, bool *pfAllocated)
+	UINT32 *pulSize, bool *pfAllocated, bool bNWNee)
 {
 
 	//
@@ -234,7 +234,7 @@ unsigned char *CNwnKeyFile::LoadRes (const Resource *psRes,
 	//
 
 	return LoadRes (GetBifIndexFromRes (psRes), 
-		GetBifResIDFromRes (psRes), pulSize, pfAllocated);
+		GetBifResIDFromRes (psRes), pulSize, pfAllocated, bNWNee);
 }
 
 //-----------------------------------------------------------------------------
@@ -255,14 +255,14 @@ unsigned char *CNwnKeyFile::LoadRes (const Resource *psRes,
 //-----------------------------------------------------------------------------
 
 unsigned char *CNwnKeyFile::LoadRes (int nBifIndex, 
-	int nBifResID, UINT32 *pulSize, bool *pfAllocated)
+	int nBifResID, UINT32 *pulSize, bool *pfAllocated, bool bNWNee)
 {
 
 	//
 	// Open the bif file
 	//
 
-	CNwnBifFile *psBif = OpenBif (nBifIndex);
+	CNwnBifFile *psBif = OpenBif (nBifIndex, bNWNee);
 	if (psBif == NULL)
 		return NULL;
 
@@ -284,7 +284,7 @@ unsigned char *CNwnKeyFile::LoadRes (int nBifIndex,
 //
 //-----------------------------------------------------------------------------
 
-CNwnBifFile *CNwnKeyFile::OpenBif (int nBifIndex)
+CNwnBifFile *CNwnKeyFile::OpenBif (int nBifIndex, bool bNWNee)
 {
 
 	//
@@ -313,7 +313,7 @@ CNwnBifFile *CNwnKeyFile::OpenBif (int nBifIndex)
 			pszTemp = psz + 1;
 	}
 	GetBifName (psBif, pszTemp, 
-		(int) (&szFileName [_countof (szFileName)] - pszTemp));
+		(int) (&szFileName [_countof (szFileName)] - pszTemp), bNWNee);
 
 	//
 	// Open the file

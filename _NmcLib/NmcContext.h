@@ -109,15 +109,15 @@ public:
 	// @cmember Load the resource from the current dir or key file
 
 	unsigned char *LoadResource (const char *pszName, 
-		NwnResType nResType, UINT32 *pulSize, bool *pfAllocated);
+		NwnResType nResType, UINT32 *pulSize, bool *pfAllocated, bool bNWNee);
 
 	// @cmember Load a super model
 
-	CNwnMdlModel *LoadModel (const char *pszModelName);
+	CNwnMdlModel *LoadModel (const char *pszModelName, bool bNWNee);
 
 	// @cmember Test to see if texture is bumpmapped
 
-	bool IsTextureBumpmapped (const char *pszName);
+	bool IsTextureBumpmapped (const char *pszName, bool bNWNee);
 
 	// @cmember Get the next token in the line
 

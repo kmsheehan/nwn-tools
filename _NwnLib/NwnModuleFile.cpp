@@ -220,7 +220,7 @@ bool CNwnModuleFile::Open (const char *pszModuleFile)
 //-----------------------------------------------------------------------------
 
 unsigned char *CNwnModuleFile::LoadRes (const char *pszName, 
-	NwnResType nResType, UINT32 *pulSize, bool *pfAllocated)
+	NwnResType nResType, UINT32 *pulSize, bool *pfAllocated, bool bNWNee)
 {
 
 	//
@@ -235,7 +235,7 @@ unsigned char *CNwnModuleFile::LoadRes (const char *pszName,
 	// Invoke the helper
 	//
 
-	return LoadRes (psRes, pulSize, pfAllocated);
+	return LoadRes (psRes, pulSize, pfAllocated, bNWNee);
 }
 
 //-----------------------------------------------------------------------------
@@ -254,7 +254,7 @@ unsigned char *CNwnModuleFile::LoadRes (const char *pszName,
 //-----------------------------------------------------------------------------
 
 unsigned char *CNwnModuleFile::LoadRes (const Resource *psRes, 
-	UINT32 *pulSize, bool *pfAllocated)
+	UINT32 *pulSize, bool *pfAllocated, bool bNWNee)
 {
 
 	//

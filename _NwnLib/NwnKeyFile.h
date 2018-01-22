@@ -119,22 +119,22 @@ public:
 
 	// @cmember Return the address of a opened bif file
 
-	CNwnBifFile *OpenBif (int nBifIndex);
+	CNwnBifFile *OpenBif (int nBifIndex, bool bNWNee);
 
 	// @cmember Load resource
 
 	unsigned char *LoadRes (const char *pszName, 
-		NwnResType nResType, UINT32 *pulSize, bool *pfAllocated);
+		NwnResType nResType, UINT32 *pulSize, bool *pfAllocated, bool bNWNee);
 
 	// @cmember Load resource
 
 	unsigned char *LoadRes (const Resource *psRes, 
-		UINT32 *pulSize, bool *pfAllocated);
+		UINT32 *pulSize, bool *pfAllocated, bool bNWNee);
 
 	// @cmember Load resource
 
 	unsigned char *LoadRes (int nBifIndex, int nBifResID, 
-		UINT32 *pulSize, bool *pfAllocated);
+		UINT32 *pulSize, bool *pfAllocated, bool bNWNee);
 
 // @access Public inline methods
 public:
@@ -165,13 +165,18 @@ public:
 
 	// @cmember Get the bif name
 
-	int GetBifName (const Bif *psBif, char *pszName, int cchMaxText) const
+	int GetBifName (const Bif *psBif, char *pszName, int cchMaxText, bool bNWNee) const
 	{
+        int offset = 0; // offset to remove data/ from the bif file name so it doesn't affect the path
+        if (bNWNee) {
+            offset = 5;
+        }
 		int nLength = (int) psBif ->usNameLength;
 		if (nLength > cchMaxText - 1)
 			nLength = cchMaxText -1;
-		memmove (pszName, (char *) &m_pauchData [psBif ->ulNameOff], nLength);
-		pszName [nLength] = 0;
+        memmove (pszName, (char *) &m_pauchData [psBif ->ulNameOff + offset], nLength - offset);
+
+        pszName [nLength] = 0;
 #ifndef _WIN32 
 		for (int i = 0; i < nLength; i++) 
 		{
@@ -182,14 +187,14 @@ public:
 		return nLength;
 	}
 
-	// @cmember Get the bif name
-
-	int GetBifName (int nBifIndex, char *pszName, int cchMaxText) const
-	{
-		const Bif *psBif = GetBif (nBifIndex);
-		return GetBifName (psBif, pszName, cchMaxText);
-	}
-
+//	// @cmember Get the bif name
+//
+//	int GetBifName (int nBifIndex, char *pszName, int cchMaxText) const
+//	{
+//		const Bif *psBif = GetBif (nBifIndex);
+//		return GetBifName (psBif, pszName, cchMaxText);
+//	}
+//
 	// @cmember Get the number of resources
 
 	int GetResCount () const
@@ -252,11 +257,11 @@ protected:
 
 	// @cmember Pointer to the res array
 
-	Resource				*m_pasRes;
+	Resource			*m_pasRes;
 
 	// @cmember Pointer to the bif array
 
-	Bif				*m_pasBif;
+	Bif				    *m_pasBif;
 
 	// @cmember Array of bif files
 

@@ -61,6 +61,7 @@ bool g_fExtract = false;
 bool g_fPurgeNullFaces = true;
 bool g_fDisableExtension = false;
 bool g_bNWNDir = false;
+bool g_bNWNee = true;
 bool g_bInclude = false;
 int g_nTest = 0;
 
@@ -133,7 +134,7 @@ void EnumBinaryModels (FN_EBMCALLBACK *pfnCallback)
 		UINT32 ulSize;
 		long lUnknown = 0;
 		unsigned char *pauchData = sKeyFile .LoadRes (
-			psRes, &ulSize, &fAllocated);
+			psRes, &ulSize, &fAllocated, g_bNWNee);
 
 		//
 		// If failed, then skip
@@ -236,7 +237,7 @@ void Test2Callback (const CNwnKeyFile::Resource *psRes,
 		CNwnMemoryStream ("internal", sDecomp1 .GetData (), 
 		sDecomp1 .GetLength (), false);
 	sCtx .AddStream (pStream);
-	NmcParseModelFile (&sCtx);
+	NmcParseModelFile (&sCtx, g_bNWNee);
 
 	//
 	// Inspect the errors and warnings
@@ -553,7 +554,7 @@ bool Compile (unsigned char *pauchData, UINT32 ulSize,
 	CNwnMemoryStream *pStream = new 
 		CNwnMemoryStream (pszInFile, pauchData, ulSize);
 	sCtx .AddStream (pStream);
-	NmcParseModelFile (&sCtx);
+	NmcParseModelFile (&sCtx, g_bNWNee);
 
 	//
 	// If we have an error, return
@@ -1178,7 +1179,7 @@ int main (int argc, char *argv [])
 			{
 				UINT32 ulSize;
 				unsigned char *pauchData = NULL;
-				pauchData = sKeyFile .LoadRes (pRes, &ulSize, NULL);
+				pauchData = sKeyFile .LoadRes (pRes, &ulSize, NULL, g_bNWNee);
 				if (pauchData == NULL)
 				{
 					printf ("Error: Unable to open input file \"%s\"\n", szName);

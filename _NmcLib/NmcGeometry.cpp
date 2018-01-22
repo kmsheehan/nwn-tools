@@ -48,7 +48,7 @@
 // External routines
 //
 
-void NmcPostMesh (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh);
+void NmcPostMesh (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh, bool bNWNee);
 void NmcPostGeometryMesh (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh);
 
 //-----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ void NmcPostGeometryMesh (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh);
 //
 //-----------------------------------------------------------------------------
 
-void NmcBeginNode (CNmcContext *pCtx)
+void NmcBeginNode (CNmcContext *pCtx, bool bNWNee)
 {
 	CNwnMdlNodeHeader *pNode = NULL;
 
@@ -339,7 +339,7 @@ void NmcBeginNode (CNmcContext *pCtx)
 
 	else if ((pNode ->m_ulFlags & NwnMdlNF_HasMesh) != 0)
 	{
-		NmcPostMesh (pCtx, static_cast <CNwnMdlMeshHeader *> (pNode));
+		NmcPostMesh (pCtx, static_cast <CNwnMdlMeshHeader *> (pNode), bNWNee);
 	}
 	return;
 }
@@ -603,7 +603,7 @@ void NmcMergeGeometryPartNumbers (
 //-----------------------------------------------------------------------------
 
 void NmcParseGeometry (CNmcContext *pCtx, 
-	CNwnMdlGeometryHeader *pGeometry, const char *pszEndText)
+	CNwnMdlGeometryHeader *pGeometry, const char *pszEndText, bool bNWNee)
 {
 
 	//
@@ -662,7 +662,7 @@ void NmcParseGeometry (CNmcContext *pCtx,
 
 		if (stricmp (pszToken, "node") == 0)
 		{
-			NmcBeginNode (pCtx);
+			NmcBeginNode (pCtx, bNWNee);
 		}
 	}
 
@@ -845,7 +845,7 @@ void NmcPostGeometry (CNmcContext *pCtx, CNwnMdlNodeHeader *pNode)
 //
 //-----------------------------------------------------------------------------
 
-void NmcParseModel (CNmcContext *pCtx)
+void NmcParseModel (CNmcContext *pCtx, bool bNWNee)
 {
 	//
 	// Get the model
@@ -938,7 +938,7 @@ void NmcParseModel (CNmcContext *pCtx)
 
 				if (szSuperModel [0] != 0 && stricmp (szSuperModel, "NULL") != 0)
 				{
-					CNwnMdlModel *pSuperModel = pCtx ->LoadModel (szSuperModel);
+					CNwnMdlModel *pSuperModel = pCtx ->LoadModel (szSuperModel, bNWNee);
 					if (pSuperModel == NULL)
 					{
 						pCtx ->GenerateError ("Unable to locate "
@@ -1033,7 +1033,7 @@ void NmcParseModel (CNmcContext *pCtx)
 			// Parse the geometry
 			//
 
-			NmcParseGeometry (pCtx, pModel, "endmodelgeom");
+			NmcParseGeometry (pCtx, pModel, "endmodelgeom", bNWNee);
 
 			//
 			// Handle post geometry processing
@@ -1098,7 +1098,7 @@ void NmcParseModel (CNmcContext *pCtx)
 				// Parse the geometry
 				//
 
-				NmcParseGeometry (pCtx, pAnimation, "doneanim");
+				NmcParseGeometry (pCtx, pAnimation, "doneanim", bNWNee);
 
 				//
 				// Handle post geometry processing
@@ -1133,7 +1133,7 @@ void NmcParseModel (CNmcContext *pCtx)
 //
 //-----------------------------------------------------------------------------
 
-void NmcParseModelFile (CNmcContext *pCtx)
+void NmcParseModelFile (CNmcContext *pCtx, bool bNWNee)
 {
 
 	//
@@ -1190,7 +1190,7 @@ void NmcParseModelFile (CNmcContext *pCtx)
 			// Parse the model
 			//
 
-			NmcParseModel (pCtx);
+			NmcParseModel (pCtx, bNWNee);
 		}
 	}
 	return;

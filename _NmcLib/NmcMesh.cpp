@@ -958,7 +958,7 @@ float NmcComputeFaceNormalSubDiv2 (CNwnMdlMeshHeader *pMesh,
 //
 //-----------------------------------------------------------------------------
 
-void NmcGenerateBumpmapData (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh)
+void NmcGenerateBumpmapData (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh, bool bNWNee)
 {
 	NmcMeshTemp *pMeshTemp = (NmcMeshTemp *) pMesh ->m_pvTempMeshData;
 
@@ -968,7 +968,7 @@ void NmcGenerateBumpmapData (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh)
 
 	if (pMesh ->m_szTextures [0] == 0 ||
 		stricmp (pMesh ->m_szTextures [0], "NULL") == 0 ||
-		!pCtx ->IsTextureBumpmapped (pMesh ->m_szTextures [0]))
+		!pCtx ->IsTextureBumpmapped (pMesh ->m_szTextures [0], bNWNee))
 		return;
 
 	//
@@ -1113,7 +1113,7 @@ void NmcGenerateBumpmapData (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh)
 //
 //-----------------------------------------------------------------------------
 
-void NmcPostMesh (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh)
+void NmcPostMesh (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh, bool bNWNee)
 {
 	//
 	// Get pointers to structures we will be using a LOT
@@ -1400,7 +1400,7 @@ void NmcPostMesh (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh)
 		// Texture animation
 		//
 
-		NmcGenerateBumpmapData (pCtx, pMesh);
+		NmcGenerateBumpmapData (pCtx, pMesh, bNWNee);
 	}
 
 	//
@@ -1415,7 +1415,7 @@ void NmcPostMesh (CNmcContext *pCtx, CNwnMdlMeshHeader *pMesh)
 		// Texture animation
 		//
 
-		NmcGenerateBumpmapData (pCtx, pMesh);
+		NmcGenerateBumpmapData (pCtx, pMesh, bNWNee);
 
 		//
 		// Face normal sum (not in dangly)

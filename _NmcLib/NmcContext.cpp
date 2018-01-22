@@ -216,7 +216,7 @@ char *CNmcContext::GetCurrentToken ()
 //-----------------------------------------------------------------------------
 
 unsigned char *CNmcContext::LoadResource (const char *pszName, 
-	NwnResType nResType, UINT32 *pulSize, bool *pfAllocated)
+	NwnResType nResType, UINT32 *pulSize, bool *pfAllocated, bool bNWNee)
 {
 
 
@@ -244,7 +244,7 @@ unsigned char *CNmcContext::LoadResource (const char *pszName,
 		if (m_vpKeyFiles [i] ->IsOpen ())
 		{
 			pauchData = m_vpKeyFiles [i] ->LoadRes (pszName, 
-				nResType, pulSize, pfAllocated);
+				nResType, pulSize, pfAllocated, bNWNee);
 			if (pauchData != NULL)
 				return pauchData;
 		}
@@ -262,7 +262,7 @@ unsigned char *CNmcContext::LoadResource (const char *pszName,
 //
 //-----------------------------------------------------------------------------
 
-CNwnMdlModel *CNmcContext::LoadModel (const char *pszName)
+CNwnMdlModel *CNmcContext::LoadModel (const char *pszName, bool bNWNee)
 {
 
 	//
@@ -283,7 +283,7 @@ CNwnMdlModel *CNmcContext::LoadModel (const char *pszName)
 	bool fAllocated;
 	UINT32 ulSize;
 	unsigned char *pauchData = LoadResource (pszName, 
-		NwnResType_MDL, &ulSize, &fAllocated);
+		NwnResType_MDL, &ulSize, &fAllocated, bNWNee);
 	if (pauchData == NULL)
 		return NULL;
 
@@ -372,7 +372,7 @@ CNwnMdlModel *CNmcContext::LoadModel (const char *pszName)
 		// Compile
 		//
 
-		NmcParseModelFile (&sCtx);
+		NmcParseModelFile (&sCtx, bNWNee);
 		if (sCtx .GetErrors ())
 		{
 			GenerateError ("Supermodel failed to compile.");
@@ -399,7 +399,7 @@ CNwnMdlModel *CNmcContext::LoadModel (const char *pszName)
 //
 //-----------------------------------------------------------------------------
 
-bool CNmcContext::IsTextureBumpmapped (const char *pszName)
+bool CNmcContext::IsTextureBumpmapped (const char *pszName, bool bNWNee)
 {
 
 	//
@@ -427,7 +427,7 @@ bool CNmcContext::IsTextureBumpmapped (const char *pszName)
 	bool fAllocated;
 	UINT32 ulSize;
 	unsigned char *pauchData = LoadResource (pszName, 
-		NwnResType_TXI, &ulSize, &fAllocated);
+		NwnResType_TXI, &ulSize, &fAllocated, bNWNee);
 	if (pauchData == NULL)
 		return false;
 

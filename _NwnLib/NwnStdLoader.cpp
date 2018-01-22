@@ -60,6 +60,7 @@ CNwnStdLoader::CNwnStdLoader ()
 	m_pModule = NULL;
 	m_bUseInclude = false;
 	m_bUseCPP = false;
+	m_bNWNee = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -92,11 +93,13 @@ CNwnStdLoader::~CNwnStdLoader ()
 //
 //-----------------------------------------------------------------------------
 
-bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char * pszIncDir)
+bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char *pszIncDir, const char *pszNwnHomeDir, const bool bNWNee)
 {
 	//
 	// If the key file has already been opened, then return
 	//
+
+	m_bNWNee = bNWNee;
 
 	if (m_asKeyFiles [0] .IsOpen () || m_bUseInclude)
 		return true;
@@ -113,6 +116,9 @@ bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char * pszIncDir)
 	if (m_strRoot .empty ())
 		return false;
 
+	if (pszNwnHomeDir != NULL)
+		m_strRootHome = pszNwnHomeDir;
+
 	//
 	// Setup the include dir if provided
 	//
@@ -123,7 +129,7 @@ bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char * pszIncDir)
 		if (m_strIncludeDir [m_strIncludeDir .size () - 1] != '/' &&
 		m_strIncludeDir [m_strIncludeDir .size () - 1] != '\\')
 		m_strIncludeDir += "/";
-
+	
 	}
 	//
 	// Add a '/' if not present
@@ -132,28 +138,88 @@ bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char * pszIncDir)
 		m_strRoot [m_strRoot .size () - 1] != '\\')
 		m_strRoot += "/";
 
-
-	if (!m_bUseInclude) {
-		//
-		// Open the key file
-		//
-		std::string str = m_strRoot + "data/nwn_base.key";
-		if (!m_asKeyFiles [0] .Open (str .c_str ()))
-			return false;
-
-		//
-		// Create the other directories
-		//
-		// Currently a HACK
-		//
-
-		m_strOverride = m_strRoot + "ovr/";
-		m_strModule = m_strRoot + "mod/";
-		m_strHak = m_strRoot + "hk/";
+	if (pszNwnHomeDir != NULL) {
+		if (m_strRootHome [m_strRootHome .size () - 1] != '/' &&
+			m_strRootHome [m_strRootHome .size () - 1] != '\\')
+			m_strRootHome += "/";
 	}
 
-	// TODO: user directory not supported atm.
+	if (!m_bUseInclude) {
+		if (bNWNee) {
+			//
+			// Open the NWN EE files
+			//
+			std::string str = m_strRoot + "data/nwn_base.key";
+			if (!m_asKeyFiles [0] .Open (str .c_str ()))
+				return false;
 
+		} else {
+			//
+			// Open the key file
+			//
+			std::string str = m_strRoot + "chitin.key";
+			if (!m_asKeyFiles [0] .Open (str .c_str ()))
+				return false;
+
+			//
+			// Open the patch file
+			//
+
+			str = m_strRoot + "patch.key";
+			m_asKeyFiles [1] .Open (str .c_str ());
+
+			//
+			// Open the xp1 file
+			//
+
+			str = m_strRoot + "xp1.key";
+			m_asKeyFiles [2] .Open (str .c_str ());
+
+			//
+			// Open the xp1 patch file
+			//
+
+			str = m_strRoot + "xp1patch.key";
+			m_asKeyFiles [3] .Open (str .c_str ());
+
+
+			//
+			// Open the xp2 file
+			//
+
+			str = m_strRoot + "xp2.key";
+			m_asKeyFiles [4] .Open (str .c_str ());
+
+			//
+			// Open the xp2 patch file
+			//
+
+			str = m_strRoot + "xp2patch.key";
+			m_asKeyFiles [5] .Open (str .c_str ());
+
+			//
+			// Open the xp3 patch file
+			//
+
+			str = m_strRoot + "xp3.key";
+			m_asKeyFiles [6] .Open (str .c_str ());
+		}
+	}
+	//
+	// Create the other directories
+	//
+	// Currently a HACK
+	//
+
+	if (bNWNee) {
+		m_strOverride = m_strRootHome + "override/";
+		m_strModule = m_strRootHome + "modules/";
+		m_strHak = m_strRootHome + "hak/";
+	} else {
+		m_strOverride = m_strRoot + "override/";
+		m_strModule = m_strRoot + "modules/";
+		m_strHak = m_strRoot + "hak/";		
+	}
 	return true;
 }
 
@@ -229,7 +295,7 @@ unsigned char *CNwnStdLoader::LoadResource (const char *pszName,
 	if (m_pModule)
 	{
 		pauchData = m_pModule ->LoadRes (pszName, 
-			nResType, pulSize, pfAllocated);
+			nResType, pulSize, pfAllocated, m_bNWNee);
 		if (pauchData)
 			return pauchData;
 	}
@@ -272,7 +338,7 @@ unsigned char *CNwnStdLoader::LoadResource (const char *pszName,
 	for (int i = 0; i < (int) m_apHaks .GetCount (); i++)
 	{
 		pauchData = m_apHaks [i] ->LoadRes (pszName, 
-			nResType, pulSize, pfAllocated);
+			nResType, pulSize, pfAllocated, m_bNWNee);
 		if (pauchData)
 			return pauchData;
 	}
@@ -302,17 +368,17 @@ unsigned char *CNwnStdLoader::LoadResource (const char *pszName,
 	if (m_bUseInclude) {
 		int d;
 		int start = 1;
-		char *dirs [] =  {
-			(char*) "xpcpp_data",
-			(char*) "xp3_data",
-			(char*)	"xp2patch_data",
-			(char*)	"xp2_data",
-			(char*)	"xp1patch_data",
-			(char*)	"xp1_data ",
-			(char*)	"base_data",
-			(char*)	"."
-		} ;
-		
+        char *dirs [] =  {
+            (char*) "xpcpp_data",
+            (char*) "xp3_data",
+            (char*)	"xp2patch_data",
+            (char*)	"xp2_data",
+            (char*)	"xp1patch_data",
+            (char*)	"xp1_data ",
+            (char*)	"base_data",
+            (char*)	"."
+        };
+
 		if (m_bUseCPP)
 			start = 0;
 
@@ -342,7 +408,7 @@ unsigned char *CNwnStdLoader::LoadResource (const char *pszName,
 			if (m_asKeyFiles [i] .IsOpen ())
 			{
 				pauchData = m_asKeyFiles [i] .LoadRes (pszName, 
-								       nResType, pulSize, pfAllocated);
+								       nResType, pulSize, pfAllocated, m_bNWNee);
 				if (pauchData != NULL)
 					return pauchData;
 			}
@@ -429,7 +495,7 @@ bool CNwnStdLoader::AddModuleHaks ()
 	if (m_pModule)
 	{
 		pauchData = m_pModule ->LoadRes (pszName, 
-			nResType, &ulSize, &fAllocated);
+			nResType, &ulSize, &fAllocated, m_bNWNee);
 	}
 
 	//

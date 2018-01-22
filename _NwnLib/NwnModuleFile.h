@@ -127,12 +127,12 @@ public:
 	// @cmember Load resource
 
 	unsigned char *LoadRes (const char *pszName, 
-		NwnResType nResType, UINT32 *pulSize, bool *pfAllocated);
+		NwnResType nResType, UINT32 *pulSize, bool *pfAllocated, bool bNWNee);
 
 	// @cmember Load resource
 
 	unsigned char *LoadRes (const Resource *psRes, 
-		UINT32 *pulSize, bool *pfAllocated);
+		UINT32 *pulSize, bool *pfAllocated, bool bNWNee);
 
 // @access Public inline methods
 public:

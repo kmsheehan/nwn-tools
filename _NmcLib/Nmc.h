@@ -70,7 +70,7 @@
 // Compiler
 //
 
-void NmcParseModelFile (CNmcContext *pCtx);
+void NmcParseModelFile (CNmcContext *pCtx, bool bNWNee);
 
 //
 // Controller and attribute routines
