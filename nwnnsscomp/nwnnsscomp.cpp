@@ -1898,7 +1898,8 @@ int main (int argc, char *argv [])
 		if (argv [i] [0] == '-')
 		{
 			char *p = &argv [i] [1];
-			while (*p && !fError)
+            bool bHelp = false;
+			while (*p && !fError && !bHelp)
 			{
 				char c = *p++;
 				switch (tolower (c))
@@ -1922,10 +1923,7 @@ int main (int argc, char *argv [])
 						bDebug = false;
 						break;
 					case 'h':
-						// get the nwnhomedir argument
-						++skip;
-						pszNWNHomeDir =  argv [i + skip];
-						g_bNWNHomeDir = true;
+                        bHelp = true;
 						break;
 					case 'p':
 						// get the nwndir argument
@@ -1946,7 +1944,13 @@ int main (int argc, char *argv [])
 						// count of global symbols
 						g_bSymbolCount = true;
 						break;
-					case 'v': {
+                    case 'u':
+                        // get the nwnhomedir argument
+                        ++skip;
+                        pszNWNHomeDir =  argv [i + skip];
+                        g_bNWNHomeDir = true;
+                        break;
+                    case 'v': {
 							g_nVersion = 0;
 							++skip;
 							char *version = argv[i + skip];
@@ -2060,10 +2064,10 @@ int main (int argc, char *argv [])
 		((g_nTest == 2 || g_nTest == 4) && nInFileCount == 0))
 	{
 		printf ("Usage:\n");
-        printf ("  Compile (default): nwnnsscomp [-c]  [eglkoqrs] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
-        printf ("  De-compile:        nwnnsscomp -d    [eglkoqrs] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
-		printf ("  Extract Script:    nwnnsscomp -x    [eglkoqrs] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
-        printf ("  Test Compile:      nwnnsscomp -t[x] [eglkoqrs] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
+        printf ("  Compile (default): nwnnsscomp [-c]  [eghlkoqrsu] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
+        printf ("  De-compile:        nwnnsscomp -d    [eghlkoqrsu] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
+		printf ("  Extract Script:    nwnnsscomp -x    [eghlkoqrsu] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
+        printf ("  Test Compile:      nwnnsscomp -t[x] [eghlkoqrsu] [-t#] [-v#] [-i incdir] [-p nwndir] [-h nwnhomedir] scriptfile(s)\n\n");
 
         printf ("Commands:\n");
         printf ("  -c  - Compile the script (default)\n");
@@ -2077,7 +2081,7 @@ int main (int argc, char *argv [])
         printf ("\nOptions:\n");
 		printf ("  -e - Enable non-Bioware extensions\n");
 		printf ("  -g - Don't produce ndb debug file\n");
-		printf ("  -h - Directory where NWN Player content is located. (Can also be set in env as NWNHOMEDIR)\n");
+		printf ("  -u - Directory where NWN Player content is located. (Can also be set in env as NWNHOMEDIR)\n");
 		printf ("  -i - Directory where all NWN scripts are located. (See Note)\n");
 		printf ("  -l - List constant, struct and function symbols and running total\n");
 		printf ("  -k - Enable CPP support - only meaningful with -i and using separate directory structure\n");
