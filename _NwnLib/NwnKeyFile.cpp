@@ -322,5 +322,5 @@ CNwnBifFile *CNwnKeyFile::OpenBif (int nBifIndex, bool bNWNee)
 	if (m_pasBifFiles [nBifIndex] .Open (szFileName))
 		return &m_pasBifFiles [nBifIndex];
 	else
-		return false;
+		return nullptr;
 }
