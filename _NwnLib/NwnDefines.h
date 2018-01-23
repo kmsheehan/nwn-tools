@@ -60,7 +60,9 @@
 #include <ctype.h>
 #include <assert.h>
 #include <stdarg.h>
+#ifndef _WIN32
 #include <libgen.h>
+#endif // !_WIN32
 #include <string>
 
 //-----------------------------------------------------------------------------

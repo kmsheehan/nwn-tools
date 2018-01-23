@@ -362,7 +362,20 @@ unsigned char *NwnLoadFile (const char *pszKeyFile, UINT32 *pulSize)
 
 const char *NwnBasename (const char *pszFile)
 {
-	return basename ((char *) pszFile);
+#ifdef _WIN32
+	char drive[_MAX_DRIVE];
+	char dir[_MAX_DIR];
+	char fname[_MAX_FNAME];
+	char ext[_MAX_EXT];
+	char *basename;
+	_splitpath(pszFile, drive, dir, fname, ext);
+	sprintf(basename, "%s.%s", fname,ext);
+
+	return basename;
+#else
+	return basename((char *)pszFile);
+#endif // _WIN32
+
 }
 
 //-----------------------------------------------------------------------------
