@@ -2116,27 +2116,6 @@ int main (int argc, char *argv [])
 		g_sLoader.EnableCPP(true);
 	}
 
-	// Add the dir search path for includes
-	/*if (strSearchDirs != NULL) {
-		std::string::size_type pos = strSearchDirs->find(';');
-		if (pos == -1)
-			g_sLoader.AddSearchDir(*strSearchDirs);
-		else {
-			// more than one
-			g_sLoader.AddSearchDir(strSearchDirs->substr(0, pos));
-			do {
-				++pos;
-				std::string::size_type delim = strSearchDirs->find(';', pos);
-				if (delim == -1)
-					g_sLoader.AddSearchDir(strSearchDirs->substr(pos));
-				else
-					g_sLoader.AddSearchDir(strSearchDirs->substr(pos, delim - pos));
-
-				pos = delim;
-			} while (pos != -1);
-		}
-	}*/
-
 	//
 	// Initialize the compiler
 	//

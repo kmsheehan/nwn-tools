@@ -382,10 +382,10 @@ unsigned char *CNwnStdLoader::LoadResource (const char *pszName,
             dirs.push_back("xp1patch");
             dirs.push_back("xp1 ");
             dirs.push_back("base");
-            dirs.push_back(".");
         };
+        dirs.push_back("."); // add current folder when all files are in single flat folder
 
-		for (d = start; d < 8; d++ ) {
+		for (d = start; d < dirs.size(); d++ ) {
 			std::string str (m_strIncludeDir);
 			str += dirs[d];
 			str += "/";
