@@ -114,9 +114,14 @@ bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char *pszIncDir, co
         if (pszIncDir != NULL || pszIncDir != "") {
             m_strIncludeDir = pszIncDir;
 
-            if (m_strIncludeDir [m_strIncludeDir .size () - 1] != '/' &&
-                m_strIncludeDir [m_strIncludeDir .size () - 1] != '\\')
-                m_strIncludeDir += "/";
+#if defined(_WIN32)
+            if (m_strIncludeDir [m_strIncludeDir .size () - 1] != '\\')
+                m_strIncludeDir += "\\";
+#else
+            if (m_strIncludeDir [m_strIncludeDir .size () - 1] != '/')
+				m_strIncludeDir += "/";
+#endif
+
 
         }
     } else {
@@ -128,7 +133,7 @@ bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char *pszIncDir, co
         if (pszNwnDir == NULL)
             pszNwnDir = GetNwnDirectory();
         if (pszNwnDir == NULL)
-            pszNwnDir = "C:/NeverwinterNights/Nwn/";
+            pszNwnDir = "C:\\NeverwinterNights\\Nwn\\";
         m_strRoot = pszNwnDir;
         if (m_strRoot.empty())
             return false;
@@ -140,21 +145,33 @@ bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char *pszIncDir, co
         //
         // Add a '/' if not present
         //
-        if (m_strRoot[m_strRoot.size() - 1] != '/' &&
-            m_strRoot[m_strRoot.size() - 1] != '\\')
-            m_strRoot += "/";
+#if defined(_WIN32)
+        if (m_strRoot[m_strRoot.size() - 1] != '\\')
+            m_strRoot += "\\";
+#else
+        if (m_strRoot[m_strRoot.size() - 1] != '/')
+			m_strRoot += "/";
+#endif
 
         if (pszNwnHomeDir != NULL) {
-            if (m_strRootHome[m_strRootHome.size() - 1] != '/' &&
-                m_strRootHome[m_strRootHome.size() - 1] != '\\')
-                m_strRootHome += "/";
+#if defined(_WIN32)
+            if (m_strRootHome[m_strRootHome.size() - 1] != '\\')
+                m_strRootHome += "\\";
+#else
+            if (m_strRootHome[m_strRootHome.size() - 1] != '/')
+				m_strRootHome += "/";
+#endif
         }
 
         if (bNWNee) {
             //
             // Open the NWN EE files
             //
-            std::string str = m_strRoot + "data/nwn_base.key";
+#if defined(_WIN32)
+			std::string str = m_strRoot + "data\\nwn_base.key";
+#else
+			std::string str = m_strRoot + "data/nwn_base.key";
+#endif
             if (!m_asKeyFiles[0].Open(str.c_str()))
                 return false;
 
@@ -216,9 +233,15 @@ bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char *pszIncDir, co
         // Currently a HACK
         //
 
-        m_strOverride = m_strRootHome + "override/";
+#if defined(_WIN32)
+		m_strOverride = m_strRootHome + "override\\";
+		m_strModule = m_strRootHome + "modules\\";
+		m_strHak = m_strRootHome + "hak\\";
+#else
+		m_strOverride = m_strRootHome + "override/";
         m_strModule = m_strRootHome + "modules/";
         m_strHak = m_strRootHome + "hak/";
+#endif
     }
 
 	return true;

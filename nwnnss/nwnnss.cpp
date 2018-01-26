@@ -1741,29 +1741,52 @@ bool MatchPattern(const char *pszString, const char *pszPattern) {
 //-----------------------------------------------------------------------------
 
 static const char USAGE[] =
-        R"(Neverwinter Nights Script Tool.
+        R"(nwnnss
     Usage:
-      nwnnss compile [cgloqrs] [-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
-      nwnnss decompile [qr][-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
-      nwnnss extract [qr] [-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
-      nwnnss (t1 | t2 | t3 | t4) [cgloqrs] [-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] [<file>...]
+      nwnnss (compile | t1 | t2 | t3 | t4) [cgloqrs] [-x <nwnversion>] [-u <nwnuserdir>] [-p <nwndir> | -k <incdir>] <file>...
+      nwnnss (decompile | extract) [qr][-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
       nwnnss (-h | --help)
       nwnnss --version
     Options:
-        -c              Enable CPP support. Requires -i and using unpacked script directory structure
-        -g              Produce ndb debug file
-        -k incdir       Script directory where all unpacked scripts from NWN are located. (See Note)
-        -l              List constant, struct, and function symbols with running total
-        -o              Enable compiler optimizer
-        -p nwndir       Directory where NWN is installed. (Can also be set in env as NWNDIR)
+        -c              Enable CPP support
+        -g              Produce ndb file
+        -l              List constant, struct, and function symbols
+        -o              Enable optimizer
         -q              Silence most messages
         -r              Report basic status even when quiet
         -s              Print symbol count
-        -u nwnuserdir   User directory where NWN User content is located. (Can also be set in env as NWNUSERDIR)
-        -x nwnversion   Set the NWN version of the compiler [default: 1.74]
+        -p nwndir       NWN install Dir or set NWNDIR in env 
+        -u nwnuserdir   NWN User Dir or set NWNUSERDIR in env
+        -k incdir       Unpacked NWN script location
+        -x nwnversion   Set NWN version for compiler [default: 1.74]
         -h --help       Show this screen
         --version       Show version
 )";
+
+//static const char USAGE[] =
+//        R"(Neverwinter Nights Script Tool.
+//    Usage:
+//      nwnnss compile [cgloqrs] [-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
+//      nwnnss decompile [qr][-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
+//      nwnnss extract [qr] [-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
+//      nwnnss (t1 | t2 | t3 | t4) [cgloqrs] [-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] [<file>...]
+//      nwnnss (-h | --help)
+//      nwnnss --version
+//    Options:
+//        -c              Enable CPP support. Requires -i and using unpacked script directory structure
+//        -g              Produce ndb debug file
+//        -k incdir       Script directory where all unpacked scripts from NWN are located. (See Note)
+//        -l              List constant, struct, and function symbols with running total
+//        -o              Enable compiler optimizer
+//        -p nwndir       Directory where NWN is installed. (Can also be set in env as NWNDIR)
+//        -q              Silence most messages
+//        -r              Report basic status even when quiet
+//        -s              Print symbol count
+//        -u nwnuserdir   User directory where NWN User content is located. (Can also be set in env as NWNUSERDIR)
+//        -x nwnversion   Set the NWN version of the compiler [default: 1.74]
+//        -h --help       Show this screen
+//        --version       Show version
+//)";
 
 
 int main(int argc, char *argv[]) {
@@ -1810,9 +1833,9 @@ int main(int argc, char *argv[]) {
                                                                      true,               // show help if requested
                                                                      "nwnnss 0.9");  // version string
 
-//    for(auto const& arg : args) {
-//        std::cout << arg.first << ": " << arg.second << std::endl;
-//    }
+    for(auto const& arg : args) {
+        std::cout << arg.first << ": " << arg.second << std::endl;
+    }
 
     auto it = args.find("compile");
     if (it != args.end()) {

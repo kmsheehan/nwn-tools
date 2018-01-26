@@ -159,7 +159,7 @@ bool NscCompilerInitialize (CNwnLoader *pLoader, int nVersion)
 	g_pCtx = &sCtx;
 	if (sCtx .parse () != 0 || sCtx .GetErrors () > 0)
 	{
-		printf ("Error compiling nwscipt.nss\n");
+		printf ("Error compiling nwscript.nss\n");
 		return false;
 	}
 
