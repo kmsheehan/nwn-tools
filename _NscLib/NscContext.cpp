@@ -136,9 +136,6 @@ CNscContext::~CNscContext ()
 int CNscContext::parse ()
 {
     yy::parser parser(*this);
-#ifdef _DEBUG
-    parser.set_debug_level(true);
-#endif
     return parser.parse();
 }
 

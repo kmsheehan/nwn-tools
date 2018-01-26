@@ -670,33 +670,52 @@ protected:
 
 	// @cmember Generate an error
 	
-	void GenerateError (const char *pszType, 
+	void GenerateError(const char *pszType,
 		const char *pszText, va_list marker)
 	{
-            char *prefix,*error;
-            if (m_pStreamTop == NULL)
-                asprintf (&prefix,"%s: ", pszType);
-            else
-            {
-                asprintf (&prefix,"%s(%d): %s: ", 
-                          m_pStreamTop ->pStream ->GetFileName (), 
-                          m_pStreamTop ->nLine, pszType);
-            }
-            printf(prefix);
-            
-            vasprintf (&error,pszText, marker);
-            printf(error);
-            
-            if (m_pErrorStream)
-            {
-                m_pErrorStream->Write(prefix,strlen(prefix));
-                m_pErrorStream->Write(error,strlen(error));
-                m_pErrorStream->Write((void*)"\n",1);
-            }
-            
-            printf ("\n");
-            free(prefix);
-            free(error);
+#ifdef _WIN32
+		char prefix[256];
+		char error[256];
+#else
+		char *prefix, *error;
+#endif
+		if (m_pStreamTop == NULL) {
+#ifdef _WIN32
+			sprintf(prefix, "%s: \0", pszType);
+#else
+			asprintf(&prefix, "%s: ", pszType);
+#endif
+		}
+		else
+		{
+#ifdef _WIN32
+			sprintf(prefix, "%s(%d): %s: \0",
+				m_pStreamTop->pStream->GetFileName(),
+				m_pStreamTop->nLine, pszType);
+#else
+			asprintf(&prefix, "%s(%d): %s: ",
+				m_pStreamTop->pStream->GetFileName(),
+				m_pStreamTop->nLine, pszType);
+#endif
+		}
+		printf(prefix);
+#ifdef _WIN32
+		sprintf(error, pszText, marker);
+#else
+		vasprintf(&error, pszText, marker);
+#endif           
+		printf(error);
+
+		if (m_pErrorStream)
+		{
+			m_pErrorStream->Write(prefix, strlen(prefix));
+			m_pErrorStream->Write(error, strlen(error));
+			m_pErrorStream->Write((void*)"\n", 1);
+		}
+
+		printf("\n");
+		free(prefix);
+		free(error);
 	}
 
 	// @cmember Read the next line
