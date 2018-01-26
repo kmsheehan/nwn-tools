@@ -177,7 +177,7 @@ public:
         memmove (pszName, (char *) &m_pauchData [psBif ->ulNameOff + offset], nLength - offset);
 
         pszName [nLength] = 0;
-#ifndef _WIN32 
+#if !defined (_WIN32) || defined(__MINGW32__)
 		for (int i = 0; i < nLength; i++) 
 		{
 			if (pszName [i] == '\\') 

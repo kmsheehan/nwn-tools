@@ -71,7 +71,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 typedef unsigned __int64 UINT64;
 typedef signed __int64 INT64;
 #else

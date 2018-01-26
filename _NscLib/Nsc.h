@@ -214,7 +214,7 @@ enum NscPCode
 //
 //-----------------------------------------------------------------------------
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #pragma warning (push)
 #pragma warning (disable : 4201)
 #endif
@@ -250,7 +250,7 @@ struct NscSymbol
 	char				szString [1];
 };
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #pragma warning (pop)
 #endif
 

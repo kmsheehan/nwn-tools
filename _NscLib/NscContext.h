@@ -673,14 +673,14 @@ protected:
 	void GenerateError(const char *pszType,
 		const char *pszText, va_list marker)
 	{
-#ifdef _WIN32
+#if defined(_WIN32)
 		char prefix[256];
 		char error[256];
 #else
 		char *prefix, *error;
 #endif
 		if (m_pStreamTop == NULL) {
-#ifdef _WIN32
+#if defined(_WIN32)
 			sprintf(prefix, "%s: \0", pszType);
 #else
 			asprintf(&prefix, "%s: ", pszType);
@@ -688,7 +688,7 @@ protected:
 		}
 		else
 		{
-#ifdef _WIN32
+#if defined(_WIN32)
 			sprintf(prefix, "%s(%d): %s: \0",
 				m_pStreamTop->pStream->GetFileName(),
 				m_pStreamTop->nLine, pszType);
@@ -699,7 +699,7 @@ protected:
 #endif
 		}
 		printf(prefix);
-#ifdef _WIN32
+#if defined(_WIN32)
 		sprintf(error, pszText, marker);
 #else
 		vasprintf(&error, pszText, marker);

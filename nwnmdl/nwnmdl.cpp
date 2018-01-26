@@ -42,7 +42,7 @@
 #include "../_NwnLib/NwnModel.h"
 #include "../_NwnLib/NwnStdLoader.h"
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #include <atlbase.h>
 #include <io.h>
 #endif
@@ -704,7 +704,7 @@ bool Decompile (unsigned char *pauchData, UINT32 ulSize,
 
 int Wildcard (const char *pszInFile, const char *pszOutFile)
 {
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 	struct _finddata_t sFind;
 
 	//
@@ -900,7 +900,7 @@ int main (int argc, char *argv [])
 	// Enable leak checking
 	//
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #if defined (_DEBUG)
 	_CrtSetDbgFlag (_CrtSetDbgFlag (_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
 #endif
@@ -910,7 +910,7 @@ int main (int argc, char *argv [])
 	// Get start time
 	//
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 	DWORD dwT1 = GetTickCount ();
 #endif
 
@@ -1009,7 +1009,7 @@ int main (int argc, char *argv [])
 		// Otherwise, save the name
 		//
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 		else if (nInFileCount == 0)
 		{
 			papszInFiles [nInFileCount++] = argv [i];
@@ -1071,7 +1071,7 @@ int main (int argc, char *argv [])
 	if (fError || (nInFileCount == 0 && g_nTest == 0))
 	{
 		printf ("Usage:\n");
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 		printf ("nwnmdl [-cdxe] [-t#] infile [outfile]\n\n");
 #else
 		printf ("nwnmdl [-cdxe] [-t#] [-i incdir] [-p nwndir] infile\n\n");
@@ -1079,7 +1079,7 @@ int main (int argc, char *argv [])
 		printf ("  incdir - directory where all NWN scripts are located (can be dummy location).\n");
 #endif
 		printf ("  infile - name of the input file.\n");
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 		printf ("  outfile - name of the output file.\n");
 #endif
 		printf ("  -c - Compile the model (default)\n");
@@ -1268,7 +1268,7 @@ int main (int argc, char *argv [])
 	// Write time
 	//
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 	printf ("Total Execution time = %d ms\n", GetTickCount () - dwT1);
 #endif
 }

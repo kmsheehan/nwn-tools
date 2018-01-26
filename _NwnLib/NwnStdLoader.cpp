@@ -43,7 +43,7 @@
 #include "NwnModuleFile.h"
 #include "NwnHierarchy.h"
 #include <vector>
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #include <atlbase.h>
 #endif
 
@@ -239,7 +239,7 @@ void CNwnStdLoader::EnableCPP(bool val) {
 
 const char *CNwnStdLoader::GetNwnDirectory ()
 {
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 	//
 	// Open the NWN registry key
 	//

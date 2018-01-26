@@ -9,7 +9,7 @@ add_library(nsc
 	NscParser
 )
 
-if(MSVC)
+if(WIN32)
 	add_custom_command(
 		OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/NscParser.cpp ${CMAKE_CURRENT_SOURCE_DIR}/NscParser.hpp
 		DEPENDS NscParser.ypp

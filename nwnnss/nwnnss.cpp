@@ -48,7 +48,7 @@
 #include <vector>
 
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #include <atlbase.h>
 #include <io.h>
 #endif
@@ -1231,7 +1231,7 @@ void DoTest4(const char *pszName) {
 //-----------------------------------------------------------------------------
 
 int WildcardTest4(const char *pszInFile) {
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
     struct _finddata_t sFind;
 
     //
@@ -1559,7 +1559,7 @@ bool Decompile(unsigned char *pauchData, UINT32 ulSize,
 int Wildcard(const char *pszInFile, const char *pszOutFile, const bool bDebug, const bool bReport) {
     bool noError = true;
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
     struct _finddata_t sFind;
 
     //
@@ -1741,7 +1741,7 @@ bool MatchPattern(const char *pszString, const char *pszPattern) {
 //-----------------------------------------------------------------------------
 
 static const char USAGE[] =
-        R"(Neverwinter Nights Script Compiler / Decompiler.
+        R"(Neverwinter Nights Script Tool.
     Usage:
       nwnnss compile [cgloqrs] [-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
       nwnnss decompile [qr][-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
@@ -1781,7 +1781,7 @@ int main(int argc, char *argv[]) {
     // Enable leak checking
     //
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #if defined (_DEBUG)
     _CrtSetDbgFlag (_CrtSetDbgFlag (_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
 #endif
@@ -1791,7 +1791,7 @@ int main(int argc, char *argv[]) {
     // Get start time
     //
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
     DWORD dwT1 = GetTickCount ();
 #endif
 
@@ -1808,7 +1808,7 @@ int main(int argc, char *argv[]) {
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
                                                                      {argv + 1, argv + argc},
                                                                      true,               // show help if requested
-                                                                     "nwnnsscomp 2.0");  // version string
+                                                                     "nwnnss 0.9");  // version string
 
 //    for(auto const& arg : args) {
 //        std::cout << arg.first << ": " << arg.second << std::endl;
@@ -2186,7 +2186,7 @@ int main(int argc, char *argv[]) {
             //
 
             int nCount = 0;
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
             struct _stat buf;
             int result = _stat(papszInFiles[i].c_str(), &buf);
 #else
@@ -2240,7 +2240,7 @@ int main(int argc, char *argv[]) {
     // Write time
     //
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
     if (!g_bQuiet)
         printf ("Total Execution time = %d ms\n", GetTickCount () - dwT1);
 #endif
