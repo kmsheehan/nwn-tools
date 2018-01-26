@@ -367,9 +367,9 @@ const char *NwnBasename (const char *pszFile)
 	char dir[_MAX_DIR];
 	char fname[_MAX_FNAME];
 	char ext[_MAX_EXT];
-	char *basename;
+	char basename[_MAX_FNAME + _MAX_EXT + 1];
 	_splitpath(pszFile, drive, dir, fname, ext);
-	sprintf(basename, "%s.%s", fname,ext);
+	sprintf(basename, "%s%s", fname,ext);
 
 	return basename;
 #else
