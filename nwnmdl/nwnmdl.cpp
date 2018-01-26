@@ -1072,9 +1072,9 @@ int main (int argc, char *argv [])
 	{
 		printf ("Usage:\n");
 #ifdef _WIN32
-		printf ("nwnmdlcomp [-cdxe] [-t#] infile [outfile]\n\n");
+		printf ("nwnmdl [-cdxe] [-t#] infile [outfile]\n\n");
 #else
-		printf ("nwnmdlcomp [-cdxe] [-t#] [-i incdir] [-p nwndir] infile\n\n");
+		printf ("nwnmdl [-cdxe] [-t#] [-i incdir] [-p nwndir] infile\n\n");
 		printf ("  nwndir - directory where NWN is installed.\n");
 		printf ("  incdir - directory where all NWN scripts are located (can be dummy location).\n");
 #endif

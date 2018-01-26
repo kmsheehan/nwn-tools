@@ -94,127 +94,132 @@ CNwnStdLoader::~CNwnStdLoader ()
 //
 //-----------------------------------------------------------------------------
 
-bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char *pszIncDir, const char *pszNwnHomeDir, const bool bNWNee)
+bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char *pszIncDir, const char *pszNwnHomeDir,
+                                const bool g_bInclude,  const bool bNWNee)
 {
 	//
 	// If the key file has already been opened, then return
 	//
 
-	m_bNWNee = bNWNee;
-
-	if (m_asKeyFiles [0] .IsOpen () || m_bUseInclude)
+	if (m_asKeyFiles [0].IsOpen () || m_bUseInclude)
 		return true;
 
-	//
-	// Get the NWN directory
-	//
+    m_bNWNee = bNWNee;
+    m_bUseInclude = g_bInclude;
 
-	if (pszNwnDir == NULL)
-		pszNwnDir = GetNwnDirectory ();
-	if (pszNwnDir == NULL)
-		pszNwnDir = "C:/NeverwinterNights/Nwn/";
-	m_strRoot = pszNwnDir;
-	if (m_strRoot .empty ())
-		return false;
+    if (m_bUseInclude) {
+        //
+        // Setup the include dir
+        //
+        if (pszIncDir != NULL || pszIncDir != "") {
+            m_strIncludeDir = pszIncDir;
 
-	if (pszNwnHomeDir != NULL)
-		m_strRootHome = pszNwnHomeDir;
+            if (m_strIncludeDir [m_strIncludeDir .size () - 1] != '/' &&
+                m_strIncludeDir [m_strIncludeDir .size () - 1] != '\\')
+                m_strIncludeDir += "/";
 
-	//
-	// Setup the include dir if provided
-	//
-	if (pszIncDir != NULL) {
-		m_strIncludeDir = pszIncDir;
-		m_bUseInclude = true;
+        }
+    } else {
 
-		if (m_strIncludeDir [m_strIncludeDir .size () - 1] != '/' &&
-		m_strIncludeDir [m_strIncludeDir .size () - 1] != '\\')
-		m_strIncludeDir += "/";
-	
-	}
-	//
-	// Add a '/' if not present
-	//
-	if (m_strRoot [m_strRoot .size () - 1] != '/' &&
-		m_strRoot [m_strRoot .size () - 1] != '\\')
-		m_strRoot += "/";
+        //
+        // Get the NWN directory
+        //
 
-	if (pszNwnHomeDir != NULL) {
-		if (m_strRootHome [m_strRootHome .size () - 1] != '/' &&
-			m_strRootHome [m_strRootHome .size () - 1] != '\\')
-			m_strRootHome += "/";
-	}
+        if (pszNwnDir == NULL)
+            pszNwnDir = GetNwnDirectory();
+        if (pszNwnDir == NULL)
+            pszNwnDir = "C:/NeverwinterNights/Nwn/";
+        m_strRoot = pszNwnDir;
+        if (m_strRoot.empty())
+            return false;
 
-	if (!m_bUseInclude) {
-		if (bNWNee) {
-			//
-			// Open the NWN EE files
-			//
-			std::string str = m_strRoot + "data/nwn_base.key";
-			if (!m_asKeyFiles [0] .Open (str .c_str ()))
-				return false;
-
-		} else {
-			//
-			// Open the key file
-			//
-			std::string str = m_strRoot + "chitin.key";
-			if (!m_asKeyFiles [0] .Open (str .c_str ()))
-				return false;
-
-			//
-			// Open the patch file
-			//
-
-			str = m_strRoot + "patch.key";
-			m_asKeyFiles [1] .Open (str .c_str ());
-
-			//
-			// Open the xp1 file
-			//
-
-			str = m_strRoot + "xp1.key";
-			m_asKeyFiles [2] .Open (str .c_str ());
-
-			//
-			// Open the xp1 patch file
-			//
-
-			str = m_strRoot + "xp1patch.key";
-			m_asKeyFiles [3] .Open (str .c_str ());
+        if (pszNwnHomeDir != NULL)
+            m_strRootHome = pszNwnHomeDir;
 
 
-			//
-			// Open the xp2 file
-			//
+        //
+        // Add a '/' if not present
+        //
+        if (m_strRoot[m_strRoot.size() - 1] != '/' &&
+            m_strRoot[m_strRoot.size() - 1] != '\\')
+            m_strRoot += "/";
 
-			str = m_strRoot + "xp2.key";
-			m_asKeyFiles [4] .Open (str .c_str ());
+        if (pszNwnHomeDir != NULL) {
+            if (m_strRootHome[m_strRootHome.size() - 1] != '/' &&
+                m_strRootHome[m_strRootHome.size() - 1] != '\\')
+                m_strRootHome += "/";
+        }
 
-			//
-			// Open the xp2 patch file
-			//
+        if (bNWNee) {
+            //
+            // Open the NWN EE files
+            //
+            std::string str = m_strRoot + "data/nwn_base.key";
+            if (!m_asKeyFiles[0].Open(str.c_str()))
+                return false;
 
-			str = m_strRoot + "xp2patch.key";
-			m_asKeyFiles [5] .Open (str .c_str ());
+        } else {
+            //
+            // Open the key file
+            //
+            std::string str = m_strRoot + "chitin.key";
+            if (!m_asKeyFiles[0].Open(str.c_str()))
+                return false;
 
-			//
-			// Open the xp3 patch file
-			//
+            //
+            // Open the patch file
+            //
 
-			str = m_strRoot + "xp3.key";
-			m_asKeyFiles [6] .Open (str .c_str ());
-		}
-	}
-	//
-	// Add the other directories
-	//
-	// Currently a HACK
-	//
+            str = m_strRoot + "patch.key";
+            m_asKeyFiles[1].Open(str.c_str());
 
-    m_strOverride = m_strRootHome + "override/";
-    m_strModule = m_strRootHome + "modules/";
-    m_strHak = m_strRootHome + "hak/";
+            //
+            // Open the xp1 file
+            //
+
+            str = m_strRoot + "xp1.key";
+            m_asKeyFiles[2].Open(str.c_str());
+
+            //
+            // Open the xp1 patch file
+            //
+
+            str = m_strRoot + "xp1patch.key";
+            m_asKeyFiles[3].Open(str.c_str());
+
+
+            //
+            // Open the xp2 file
+            //
+
+            str = m_strRoot + "xp2.key";
+            m_asKeyFiles[4].Open(str.c_str());
+
+            //
+            // Open the xp2 patch file
+            //
+
+            str = m_strRoot + "xp2patch.key";
+            m_asKeyFiles[5].Open(str.c_str());
+
+            //
+            // Open the xp3 patch file
+            //
+
+            str = m_strRoot + "xp3.key";
+            m_asKeyFiles[6].Open(str.c_str());
+        }
+
+        //
+        // Add the other directories
+        //
+        // Currently a HACK
+        //
+
+        m_strOverride = m_strRootHome + "override/";
+        m_strModule = m_strRootHome + "modules/";
+        m_strHak = m_strRootHome + "hak/";
+    }
 
 	return true;
 }

@@ -595,7 +595,7 @@ enum NscResult
 	NscResult_Include	= 2,
 };
 
-bool NscCompilerInitialize (CNwnLoader *pLoader, int nVersion, bool fEnableExtensions);
+bool NscCompilerInitialize (CNwnLoader *pLoader, int nVersion);
 NscResult NscCompileScript (CNwnLoader *pLoader, const char *pszName, 
                             unsigned char *pauchData, UINT32 ulSize, bool fAllocated,
                             int nVersion, bool fEnableOptimizations, bool fIgnoreIncludes, bool fCountSymbols, bool fPrintSymbols,

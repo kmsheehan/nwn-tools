@@ -90,11 +90,8 @@ inline void NscAddToken (char *pszName, int nToken)
 //
 //-----------------------------------------------------------------------------
 
-bool NscCompilerInitialize (CNwnLoader *pLoader, int nVersion, 
-	bool fEnableExtensions)
+bool NscCompilerInitialize (CNwnLoader *pLoader, int nVersion)
 {
-	fEnableExtensions; //4100
-
 	//
 	// Reset 
 	//
@@ -128,7 +125,7 @@ bool NscCompilerInitialize (CNwnLoader *pLoader, int nVersion,
 	NscAddToken ("return",         RETURN);
 	NscAddToken ("switch",         SWITCH);
 	NscAddToken ("while",          WHILE);
-	if (fEnableExtensions || nVersion >= 169)
+	if (nVersion >= 169)
         NscAddToken ("const",      NWCONST);
 
 	NscAddToken ("OBJECT_SELF",    OBJECT_SELF_CONST);

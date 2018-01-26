@@ -87,7 +87,8 @@ public:
 
 	// @cmember Initialize the loader
 
-	bool Initialize (const char *pszNwnDir = NULL, const char *pszIncDir = NULL, const char *pszNwnHomeDir = NULL, const bool bNWNee = true);
+	bool Initialize (const char *pszNwnDir = NULL, const char *pszIncDir = NULL, const char *pszNwnHomeDir = NULL,
+					 const bool g_bInclude = false, const bool bNWNee = true);
 
 	void EnableCPP(bool val);
  
