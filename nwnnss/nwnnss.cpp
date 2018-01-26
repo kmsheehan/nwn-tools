@@ -1743,16 +1743,16 @@ bool MatchPattern(const char *pszString, const char *pszPattern) {
 static const char USAGE[] =
         R"(Neverwinter Nights Script Compiler / Decompiler.
     Usage:
-      nwnnss compile [cgloqrs] [-x <nwnversion>] [-p <nwndir> | -i <incdir>] [-u <nwnuserdir>] <file>...
-      nwnnss decompile [qr][-x <nwnversion>] [-p <nwndir> | -i <incdir>] [-u <nwnuserdir>] <file>...
-      nwnnss extract [qr] [-x <nwnversion>] [-p <nwndir> | -i <incdir>] [-u <nwnuserdir>] <file>...
-      nwnnss (t1 | t2 | t3 | t4) [cgloqrs] [-x <nwnversion>] [-p <nwndir> | -i <incdir>] [-u <nwnuserdir>] [<file>...]
+      nwnnss compile [cgloqrs] [-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
+      nwnnss decompile [qr][-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
+      nwnnss extract [qr] [-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
+      nwnnss (t1 | t2 | t3 | t4) [cgloqrs] [-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] [<file>...]
       nwnnss (-h | --help)
       nwnnss --version
     Options:
         -c              Enable CPP support. Requires -i and using unpacked script directory structure
         -g              Produce ndb debug file
-        -i incdir       Script directory where all unpacked scripts from NWN are located. (See Note)
+        -k incdir       Script directory where all unpacked scripts from NWN are located. (See Note)
         -l              List constant, struct, and function symbols with running total
         -o              Enable compiler optimizer
         -p nwndir       Directory where NWN is installed. (Can also be set in env as NWNDIR)
@@ -1919,7 +1919,7 @@ int main(int argc, char *argv[]) {
         g_bNWNUserDir = true;
     }
 
-    it = args.find("-i");
+    it = args.find("-k");
     if (it != args.end()) {
         if (it->second.isString()) {
             pszIncDir = it->second.asString();
@@ -1939,11 +1939,11 @@ int main(int argc, char *argv[]) {
     }
 
     if (!g_bInclude && !g_bNWNDir) {
-        printf ("No NWN Directory or Include Directory specified.  Please try nwnnsscomp -h");
+        printf ("No NWN Directory or Include Directory specified.  Please try nwnnss -h");
         exit(1);
     }
     if (g_bNWNee && g_bNWNDir && !g_bNWNUserDir) {
-        printf ("No NWN User Directory specified.  Please try nwnnsscomp -h");
+        printf ("No NWN User Directory specified.  Please try nwnnss -h");
         exit(1);
     }
 
