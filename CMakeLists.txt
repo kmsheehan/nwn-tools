@@ -16,11 +16,12 @@ if (NOT BISON_FOUND)
 	message(FATAL_ERROR "Cannot find bison, need bison installed to generate Parser/Lexer")
 endif (NOT BISON_FOUND)
 
-
-#set(CMAKE_CXX_FLAGS "-Wall -Wno-unused -Wno-write-strings -Wno-deprecated -std=c++11 -static")
-#set(CMAKE_CXX_FLAGS " -w -O2 -m32 -std=c++11 -static")
-set(CMAKE_CXX_FLAGS "-g -w -m32 -std=c++11 -static")
-#set(CMAKE_CXX_FLAGS "-w /EHsc")
+if (UNIX OR APPLE OR MINGW OR CYGWIN)
+	#set(CMAKE_CXX_FLAGS "-Wall -Wno-unused -Wno-write-strings -Wno-deprecated -std=c++11 -static")
+	set(CMAKE_CXX_FLAGS " -w -O2 -m32 -std=c++11 -static")
+	#set(CMAKE_CXX_FLAGS "-g -w -m32 -std=c++11 -static")
+	#set(CMAKE_CXX_FLAGS "-w /EHsc")
+endif()
 
 if (BISON_VERSION VERSION_GREATER "3.0.0")
    add_definitions(-DNWN_BISON_3=1)

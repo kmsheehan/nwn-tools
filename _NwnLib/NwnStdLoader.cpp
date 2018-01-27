@@ -130,15 +130,15 @@ bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char *pszIncDir, co
         // Get the NWN directory
         //
 
-        if (pszNwnDir == NULL)
+        if (strlen(pszNwnDir) == 0 && !bNWNee)
             pszNwnDir = GetNwnDirectory();
-        if (pszNwnDir == NULL)
+        if (strlen(pszNwnDir) == 0 && !bNWNee)
             pszNwnDir = "C:\\NeverwinterNights\\Nwn\\";
         m_strRoot = pszNwnDir;
         if (m_strRoot.empty())
             return false;
 
-        if (pszNwnHomeDir != NULL)
+        if (strlen(pszNwnHomeDir) == 0 && bNWNee)
             m_strRootHome = pszNwnHomeDir;
 
 
@@ -153,7 +153,7 @@ bool CNwnStdLoader::Initialize (const char *pszNwnDir, const char *pszIncDir, co
 			m_strRoot += "/";
 #endif
 
-        if (pszNwnHomeDir != NULL) {
+        if (strlen(pszNwnHomeDir) == 0 && bNWNee) {
 #if defined(_WIN32)
             if (m_strRootHome[m_strRootHome.size() - 1] != '\\')
                 m_strRootHome += "\\";

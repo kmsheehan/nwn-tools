@@ -1743,7 +1743,7 @@ bool MatchPattern(const char *pszString, const char *pszPattern) {
 static const char USAGE[] =
         R"(nwnnss
     Usage:
-      nwnnss (compile | t1 | t2 | t3 | t4) [cgloqrs] [-x <nwnversion>] [-u <nwnuserdir>] [-p <nwndir> | -k <incdir>] <file>...
+      nwnnss (compile | t1 | t2 | t3 | t4) [cgloqrs] [-x <nwnversion>] [-u <nwnuserdir>] [-p <nwndir> | -k <incdir>] [<file>...]
       nwnnss (decompile | extract) [qr][-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
       nwnnss (-h | --help)
       nwnnss --version
@@ -1833,9 +1833,9 @@ int main(int argc, char *argv[]) {
                                                                      true,               // show help if requested
                                                                      "nwnnss 0.9");  // version string
 
-    for(auto const& arg : args) {
-        std::cout << arg.first << ": " << arg.second << std::endl;
-    }
+    //for(auto const& arg : args) {
+    //    std::cout << arg.first << ": " << arg.second << std::endl;
+    //}
 
     auto it = args.find("compile");
     if (it != args.end()) {
@@ -1961,11 +1961,11 @@ int main(int argc, char *argv[]) {
         papszInFiles = it->second.asStringList();
     }
 
-    if (!g_bInclude && !g_bNWNDir) {
+    if (g_bNWNee && !g_bInclude && !g_bNWNDir) {
         printf ("No NWN Directory or Include Directory specified.  Please try nwnnss -h");
         exit(1);
     }
-    if (g_bNWNee && g_bNWNDir && !g_bNWNUserDir) {
+    if (g_bNWNee && !g_bNWNUserDir) {
         printf ("No NWN User Directory specified.  Please try nwnnss -h");
         exit(1);
     }
