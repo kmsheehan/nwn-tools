@@ -1833,9 +1833,9 @@ int main(int argc, char *argv[]) {
                                                                      true,               // show help if requested
                                                                      "nwnnss 0.9");  // version string
 
-    //for(auto const& arg : args) {
-    //    std::cout << arg.first << ": " << arg.second << std::endl;
-    //}
+//    for(auto const& arg : args) {
+//        std::cout << arg.first << ": " << arg.second << std::endl;
+//    }
 
     auto it = args.find("compile");
     if (it != args.end()) {
@@ -1950,10 +1950,7 @@ int main(int argc, char *argv[]) {
     }
     if (pszIncDir.length() > 0) {
         g_bInclude = true;
-        g_bNWNUserDir = false;
         g_bNWNDir = false;
-        pszNWNUserDir = "/tmp";
-        pszNWNDir = "/tmp";
     }
 
     it = args.find("<file>");
@@ -1961,13 +1958,19 @@ int main(int argc, char *argv[]) {
         papszInFiles = it->second.asStringList();
     }
 
-    if (g_bNWNee && !g_bInclude && !g_bNWNDir) {
-        printf ("No NWN Directory or Include Directory specified.  Please try nwnnss -h");
-        exit(1);
-    }
-    if (g_bNWNee && !g_bNWNUserDir) {
-        printf ("No NWN User Directory specified.  Please try nwnnss -h");
-        exit(1);
+    if (g_bNWNee) {
+        bool missingArgs = false;
+        if (!g_bInclude && !g_bNWNDir) {
+            printf("No NWN Directory or Include Directory specified.  Please try nwnnss -h");
+            missingArgs = true;
+        }
+        if (!g_bNWNUserDir) {
+            printf("No NWN User Directory specified.  Please try nwnnss -h");
+            missingArgs = true;
+        }
+        if (missingArgs) {
+            exit(1);
+        }
     }
 
     //
