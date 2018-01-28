@@ -1740,6 +1740,8 @@ bool MatchPattern(const char *pszString, const char *pszPattern) {
 //
 //-----------------------------------------------------------------------------
 
+// TODO: Increasing the size of the below usage message will cause runtime errors when built in Visual Studio on Windows - Investigate and solved length issue.
+
 static const char USAGE[] =
         R"(nwnnss
     Usage:
@@ -1958,19 +1960,9 @@ int main(int argc, char *argv[]) {
         papszInFiles = it->second.asStringList();
     }
 
-    if (g_bNWNee) {
-        bool missingArgs = false;
-        if (!g_bInclude && !g_bNWNDir) {
-            printf("No NWN Directory or Include Directory specified.  Please try nwnnss -h");
-            missingArgs = true;
-        }
-        if (!g_bNWNUserDir) {
-            printf("No NWN User Directory specified.  Please try nwnnss -h");
-            missingArgs = true;
-        }
-        if (missingArgs) {
-            exit(1);
-        }
+    if (g_bNWNee && (!g_bInclude && !g_bNWNDir)) {
+        printf("No NWN Directory or Include Directory specified.  Please try nwnnss -h");
+        exit(1);
     }
 
     //
