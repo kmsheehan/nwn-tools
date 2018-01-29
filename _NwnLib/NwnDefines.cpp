@@ -363,15 +363,14 @@ unsigned char *NwnLoadFile (const char *pszKeyFile, UINT32 *pulSize)
 const char *NwnBasename (const char *pszFile)
 {
 #if defined(_WIN32)
-	char drive[_MAX_DRIVE];
-	char dir[_MAX_DIR];
-	char fname[_MAX_FNAME];
-	char ext[_MAX_EXT];
-	char basename[_MAX_FNAME + _MAX_EXT + 1];
-	_splitpath(pszFile, drive, dir, fname, ext);
-	sprintf(basename, "%s%s", fname,ext);
-
-	return basename;
+	if (pszFile == NULL)
+		return NULL;
+	for (const char *psz = pszFile; *psz; ++psz)
+	{
+        if (*psz == '\\' || *psz == '/' || *psz == ':')
+			pszFile = psz + 1;
+	}
+	return pszFile;
 #else
 	return basename((char *)pszFile);
 #endif // _WIN32
