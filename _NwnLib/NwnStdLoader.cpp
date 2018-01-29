@@ -390,20 +390,17 @@ unsigned char *CNwnStdLoader::LoadResource (const char *pszName,
 	// Try the include dir if enabled
     //
     int d;
-    int start = 1;
+    int start = 0;
     //char *dirs ;
     std::vector <std::string> dirs;
 	if (m_bUseInclude) {
+		if (m_bUseCPP) {
+			dirs.push_back("xpcpp");
+		}
         if (m_bNWNee) {
             start = 0;
             dirs.push_back("base_scripts");
         } else {
-
-            if (m_bUseCPP) {
-                start = 0;
-            }
-
-            dirs.push_back("xpcpp");
             dirs.push_back("xp3");
             dirs.push_back("xp2patch");
             dirs.push_back("xp2");

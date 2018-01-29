@@ -1745,8 +1745,8 @@ bool MatchPattern(const char *pszString, const char *pszPattern) {
 static const char USAGE[] =
         R"(nwnnss
     Usage:
-      nwnnss (compile | t1 | t2 | t3 | t4) [cgloqrs] [-x <nwnversion>] [-u <nwnuserdir>] [-p <nwndir> | -k <incdir>] [<file>...]
-      nwnnss (decompile | extract) [qr][-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
+      nwnnss (compile | t1 | t2 | t3 | t4) [-cgloqrs] [-x <nwnversion>] [-u <nwnuserdir>] [-p <nwndir> | -k <incdir>] [<file>...]
+      nwnnss (decompile | extract) [-qr][-x <nwnversion>] [-p <nwndir> | -k <incdir>] [-u <nwnuserdir>] <file>...
       nwnnss (-h | --help)
       nwnnss --version
     Options:
@@ -1835,9 +1835,9 @@ int main(int argc, char *argv[]) {
                                                                      true,               // show help if requested
                                                                      "nwnnss 0.9");  // version string
 
-//    for(auto const& arg : args) {
-//        std::cout << arg.first << ": " << arg.second << std::endl;
-//    }
+ //   for(auto const& arg : args) {
+ //       std::cout << arg.first << ": " << arg.second << std::endl;
+ //   }
 
     auto it = args.find("compile");
     if (it != args.end()) {
