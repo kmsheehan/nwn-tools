@@ -30,6 +30,15 @@ if (MINGW OR CYGWIN)
     #set(CMAKE_CXX_FLAGS "-w /EHsc")
 endif()
 
+if (MSVC)
+	foreach(flag_var
+        CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+		if(${flag_var} MATCHES "/MD")
+			string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+		endif(${flag_var} MATCHES "/MD")
+	endforeach(flag_var)
+endif()
 
 if (BISON_VERSION VERSION_GREATER "3.0.0")
    add_definitions(-DNWN_BISON_3=1)
